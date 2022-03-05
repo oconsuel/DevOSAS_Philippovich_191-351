@@ -1,0 +1,88 @@
+;
+; DevOSAS_Philippovich_191-351.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=USBDevice
+ClassGuid={88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider=%ManufacturerName%
+CatalogFile=DevOSAS_Philippovich_191-351.cat
+DriverVer=
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+DevOSAS_Philippovich_191-351_Device_CoInstaller_CopyFiles = 11
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+DevOSAS_Philippovich_191-351.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%DevOSAS_Philippovich_191-351.DeviceDesc%=DevOSAS_Philippovich_191-351_Device, USB\VID_vvvv&PID_pppp
+
+[DevOSAS_Philippovich_191-351_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+DevOSAS_Philippovich_191-351.sys
+
+[DevOSAS_Philippovich_191-351_Device.NT.HW]
+AddReg=DevOSAS_Philippovich_191-351_AddReg
+
+[DevOSAS_Philippovich_191-351_AddReg]
+; By default, USBDevice class uses iProduct descriptor to name the device in
+; Device Manager on Windows 8 and higher.
+; Uncomment for this device to use %DeviceName% on Windows 8 and higher:
+;HKR,,FriendlyName,,%DevOSAS_Philippovich_191-351.DeviceDesc%
+
+;-------------- Service installation
+[DevOSAS_Philippovich_191-351_Device.NT.Services]
+AddService = DevOSAS_Philippovich_191-351,%SPSVCINST_ASSOCSERVICE%, DevOSAS_Philippovich_191-351_Service_Inst
+
+; -------------- DevOSAS_Philippovich_191-351 driver install sections
+[DevOSAS_Philippovich_191-351_Service_Inst]
+DisplayName    = %DevOSAS_Philippovich_191-351.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\DevOSAS_Philippovich_191-351.sys
+
+;
+;--- DevOSAS_Philippovich_191-351_Device Coinstaller installation ------
+;
+
+[DevOSAS_Philippovich_191-351_Device.NT.CoInstallers]
+AddReg=DevOSAS_Philippovich_191-351_Device_CoInstaller_AddReg
+CopyFiles=DevOSAS_Philippovich_191-351_Device_CoInstaller_CopyFiles
+
+[DevOSAS_Philippovich_191-351_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[DevOSAS_Philippovich_191-351_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[DevOSAS_Philippovich_191-351_Device.NT.Wdf]
+KmdfService =  DevOSAS_Philippovich_191-351, DevOSAS_Philippovich_191-351_wdfsect
+[DevOSAS_Philippovich_191-351_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Universal Serial Bus devices"
+DiskName = "DevOSAS_Philippovich_191-351 Installation Disk"
+DevOSAS_Philippovich_191-351.DeviceDesc = "DevOSAS_Philippovich_191-351 Device"
+DevOSAS_Philippovich_191-351.SVCDESC = "DevOSAS_Philippovich_191-351 Service"
+REG_MULTI_SZ = 0x00010000
